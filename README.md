@@ -48,3 +48,40 @@
 cd backend
 npm install
 node server.js
+
+
+
+
+Parser Service (Python)
+cd parser_service
+pip install -r requirements.txt
+uvicorn main:app --reload
+
+
+Then open:
+http://localhost:8000/docs
+ (for API testing)
+
+🏗️ Deployment Plan
+
+Deploy backend on AWS EC2
+
+Use NGINX reverse proxy
+
+Host parser microservice using FastAPI + Docker
+
+Connect both via REST endpoints
+
+🏁 Status
+
+✅ Core logic completed
+🧩 Integration & deployment — Next phase
+
+📫 Contact
+
+Hardik Raheja
+📧 hardik.21raheja@gmail.com
+
+🌐 LinkedIn
+
+📍 Mathura, India
