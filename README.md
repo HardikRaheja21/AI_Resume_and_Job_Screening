@@ -35,9 +35,7 @@
 
 ## 👥 Team
 
-- **Hardik Raheja** — Core Developer (Backend & NLP Integration)  
-- **Teammate** — Frontend / API testing  
-- **Mentor** — Project Guidance & Review  
+- **Hardik Raheja** — Core Developer (Backend & NLP Integration) , Frontend / API testing  
 
 ---
 
