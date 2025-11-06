@@ -58,3 +58,38 @@ node server.js
 cd parser_service
 pip install -r requirements.txt
 uvicorn main:app --reload
+
+
+
+
+
+
+
+
+Then open your browser and visit:  
+👉 [http://localhost:8000/docs](http://localhost:8000/docs) *(for API testing)*
+
+---
+
+## 🏗️ Deployment Plan
+
+- Deploy backend on **AWS EC2**
+- Use **NGINX** as a reverse proxy
+- Host parser microservice using **FastAPI + Docker**
+- Connect both services via **REST endpoints**
+
+---
+
+## 🏁 Status
+
+✅ **Core logic completed**  
+🧩 **Integration & deployment — Next phase**
+
+---
+
+## 📫 Contact
+
+**Hardik Raheja**  
+📧 [hardik.21raheja@gmail.com](mailto:hardik.21raheja@gmail.com)  
+🌐 [LinkedIn](https://linkedin.com/in/hardikraheja21)  
+📍 *Mathura, India*
