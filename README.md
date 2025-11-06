@@ -1,3 +1,6 @@
+# 🚀 AI-Based Resume Screening & Job Matching System
+
+An AI-powered resume shortlisting system that automatically parses, analyzes, and matches resumes with job descriptions using Natural Language Processing (NLP) and Machine Learning techniques.
 
 ---
 
@@ -6,8 +9,8 @@
 | Component | Technology |
 |------------|-------------|
 | **Frontend (Future)** | React.js |
-| **Backend** | Node.js + Express |
-| **Parser Service** | Python + SpaCy + Scikit-learn |
+| **Backend** | Node.js + Express *(Developed by Ashish Agrawal)* |
+| **Parser Service** | Python + SpaCy + Scikit-learn *(Developed by Hardik Raheja)* |
 | **Database** | MongoDB |
 | **Version Control** | Git & GitHub |
 | **Environment** | Virtualenv (Python), npm (Node.js) |
@@ -16,29 +19,31 @@
 
 ## 🧩 Core Logic Overview
 
-1. **Upload Resume / JD** → via API endpoint.  
-2. **Extract Text** → PDF/DOCX parsed using PyPDF2 / docx.  
-3. **Process with SpaCy** → Extract entities like skills, names, and experience.  
-4. **Vectorize (TF-IDF)** → Compare similarity between resume and job description.  
-5. **Return Matching Score** → Backend sends JSON response with ranked candidates.
+1. **Upload Resume / JD** → via API endpoint  
+2. **Extract Text** → PDF/DOCX parsed using PyPDF2 / docx  
+3. **Process with SpaCy** → Extract entities like skills, names, and experience  
+4. **Vectorize (TF-IDF)** → Compare similarity between resume and job description  
+5. **Return Matching Score** → Backend sends JSON response with ranked candidates  
 
 ---
 
 ## 🌱 Future Enhancements
 
-- 🧠 Integrate **LLM-based Resume Scoring (Gemini / GPT)**  
-- ☁️ **Deploy** backend and parser on **AWS Lambda / EC2**  
-- 📊 Add **Admin Dashboard** for viewing shortlisted candidates  
-- 🔒 Include **Authentication & Role-based Access**
+- 🧠 Integrate *LLM-based Resume Scoring (Gemini / GPT)*  
+- ☁️ *Deploy* backend and parser on *AWS Lambda / EC2*  
+- 📊 Add *Admin Dashboard* for viewing shortlisted candidates  
+- 🔒 Include *Authentication & Role-based Access*
 
 ---
 
 ## 👥 Team
 
-- **Hardik Raheja** — Core Developer (Backend & NLP Integration) , Frontend / API testing  
+| Member | Role |
+|---------|------|
+| **Ashish Agrawal** | Core Developer – *Backend Development (Node.js + Express)*, *Frontend & API Testing*  |
+| **Hardik Raheja** | Core Developer – *NLP Integration (Python + SpaCy)*, *Frontend & API Testing* |
 
 ---
-
 ## 🛠️ Setup Instructions
 
 ### Backend (Node.js)
