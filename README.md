@@ -88,6 +88,6 @@ Then open your browser and visit:
 ## 📫 Contact
 
 **Hardik Raheja**  
-📧 [hardik.21raheja@gmail.com](mailto:hardik.21raheja@gmail.com)  
+📧 [hardik.21raheja@gmail.com]
 🌐 [LinkedIn](https://linkedin.com/in/hardikraheja21)  
 📍 *Mathura, India*
