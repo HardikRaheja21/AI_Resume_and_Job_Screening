@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Resume Parser</title>
+  <link rel="stylesheet" href="/static/styles.css?v=5" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap">
+      <h1 class="glow">Resume Parser AI</h1>
+      <p class="subtitle">Upload resumes, analyze skills, and compare with a job description.</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Upload Section -->
+    <section class="card">
+      <h2><span>📁</span> Upload Resumes</h2>
+      <form id="uploadForm">
+        <label class="label">Select resume files (.pdf, .docx, .txt)</label>
+        <input id="resumes" name="resumes" type="file" multiple required />
+
+        <label class="label">Job description</label>
+        <textarea id="jd" name="job_description" rows="4" placeholder="Enter job description..." required></textarea>
+
+        <div class="row">
+          <button id="submitBtn" type="submit">🔍 Parse & Rank</button>
+          <button id="clearBtn" type="button" class="muted">Clear</button>
+        </div>
+
+        <progress id="progress" value="0" max="100" style="display:none"></progress>
+      </form>
+    </section>
+
+    <!-- Leaderboard Section -->
+    <section class="card">
+      <h2><span>🏆</span> Leaderboard</h2>
+      <div id="results" class="results">
+        <p class="muted">No results yet. Upload resumes and click <b>“Parse & Rank”</b>.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>Local demo • FastAPI backend at <code>/parse_resume</code></p>
+  </footer>
+
+  <script src="/static/app.js?v=2"></script>
+</body>
+</html>
