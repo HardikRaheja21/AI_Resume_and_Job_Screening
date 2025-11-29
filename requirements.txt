@@ -9,3 +9,4 @@ python-docx
 python-dotenv
 email-validator
 python-magic
+pydantic-settings     
