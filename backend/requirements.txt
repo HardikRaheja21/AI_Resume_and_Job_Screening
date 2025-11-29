@@ -1,0 +1,11 @@
+fastapi
+uvicorn[standard]
+python-multipart
+sqlmodel
+python-jose[cryptography]
+passlib[bcrypt]
+pdfminer.six
+python-docx
+python-dotenv
+email-validator
+python-magic
