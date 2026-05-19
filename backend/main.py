@@ -211,7 +211,11 @@ def readyz():
 
     health_summary = health.readiness_summary()
 
-    all_ok = db_ok and upload_dir_ok and all(health_summary.values())
+    # Optional subsystems such as OCR, embeddings, and vector search can be
+    # disabled or unavailable on smaller deployments without making the API
+    # unready. Keep them visible in the response but gate readiness on the
+    # core API dependencies.
+    all_ok = db_ok and upload_dir_ok
     if not all_ok:
         detail = {"database": db_ok, "upload_dir": upload_dir_ok}
         detail.update(health_summary)

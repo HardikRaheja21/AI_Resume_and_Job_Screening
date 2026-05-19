@@ -630,7 +630,7 @@ async def upload_resumes(
             extra={
                 "request_id": request_id,
                 "resume_id": record.id,
-                "filename": fname,
+                "file_name": fname,
                 "score": round(score, 2),
                 "selected": selected,
                 "job_id": selected_job.id if selected_job else None,

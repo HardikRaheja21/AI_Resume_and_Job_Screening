@@ -1,4 +1,4 @@
-const API_BASE = "http://127.0.0.1:8000";
+const API_BASE = localStorage.getItem("api_base") || window.location.origin;
 
 async function parseResponse(response) {
   const data = await response.json().catch(() => ({}));

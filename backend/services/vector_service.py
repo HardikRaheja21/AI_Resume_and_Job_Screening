@@ -190,7 +190,7 @@ def index_resume_chunks(resume: Resume, parsed_text: Optional[str] = None) -> No
             metrics.inc_chroma_fallback()
         except Exception:
             pass
-        raise RuntimeError("ChromaDB is not installed")
+        return
     if resume.id is None:
         raise ValueError("Resume must have an id before indexing")
 

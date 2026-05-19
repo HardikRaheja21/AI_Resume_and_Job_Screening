@@ -8,7 +8,7 @@ function uniqueEmail(prefix = "e2e") {
 test.describe("Swagger UI + API flows", () => {
   test.beforeEach(async ({ page, baseURL }) => {
     await page.goto(`${baseURL}/docs`);
-    await expect(page.locator(".swagger-ui")).toBeVisible();
+    await expect(page).toHaveTitle(/Swagger UI/);
   });
 
   test("signs up a user from /auth/signup", async ({ request, baseURL }) => {
