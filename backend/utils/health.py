@@ -7,7 +7,8 @@ from ..services import nlp_extractor
 
 def embedding_ready() -> bool:
     try:
-        return embedding_service.is_embedding_available()
+        # Use lightweight check that doesn't load the model
+        return embedding_service.is_embedding_enabled()
     except Exception:
         return False
 
@@ -16,12 +17,8 @@ def vector_db_ready() -> bool:
     try:
         if not vector_service._chroma_available():
             return False
-        # attempt to create client (may be cached)
-        try:
-            vector_service._create_chroma_client()
-            return True
-        except Exception:
-            return False
+        # Don't try to create client during health check - just check if chromadb is available
+        return True
     except Exception:
         return False
 

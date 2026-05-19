@@ -40,8 +40,10 @@ configure_tracing()
 
 @asynccontextmanager
 async def lifespan(_: FastAPI):
+    # Initialize database on startup
     init_db()
-    resume_matcher.warmup_model()
+    # Skip warmup_model() to reduce memory footprint on startup
+    # Models will be loaded on first use (lazy loading)
     yield
 
 

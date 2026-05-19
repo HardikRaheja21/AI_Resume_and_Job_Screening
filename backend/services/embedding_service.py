@@ -17,9 +17,15 @@ _EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
 
 
 def is_embedding_available() -> bool:
+    """Check if embeddings can be used. Attempts to load model if not already loaded."""
     if settings.MATCHER_DISABLE_EMBEDDINGS:
         return False
     return _get_model() is not None
+
+
+def is_embedding_enabled() -> bool:
+    """Lightweight check if embeddings are enabled (without loading model)."""
+    return not settings.MATCHER_DISABLE_EMBEDDINGS
 
 
 def _load_sentence_transformers() -> Tuple[Any, Any]:
