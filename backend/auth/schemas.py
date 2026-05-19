@@ -1,43 +1,36 @@
-<<<<<<< HEAD
-from pydantic import BaseModel, EmailStr
+import re
+from pydantic import BaseModel, EmailStr, field_validator
 from typing import Optional
-=======
-# from pydantic import BaseModel
-
-# class UserCreate(BaseModel):
-#     username: str
-#     password: str
-
-# class UserRead(BaseModel):
-#     id: int
-#     username: str
-
-# class Token(BaseModel):
-#     access_token: str
-#     token_type: str
-from pydantic import BaseModel, EmailStr
->>>>>>> e3761875c99d5c92134c9a9fa2255c256c20fb91
 
 class UserCreate(BaseModel):
     email: EmailStr
     password: str
-<<<<<<< HEAD
     full_name: Optional[str] = None
-=======
->>>>>>> e3761875c99d5c92134c9a9fa2255c256c20fb91
+
+    @field_validator("password")
+    @classmethod
+    def validate_password(cls, value: str) -> str:
+        if len(value) < 8:
+            raise ValueError("Password must be at least 8 characters long")
+        if not re.search(r"[A-Z]", value):
+            raise ValueError("Password must include at least one uppercase letter")
+        if not re.search(r"[a-z]", value):
+            raise ValueError("Password must include at least one lowercase letter")
+        if not re.search(r"\d", value):
+            raise ValueError("Password must include at least one number")
+        return value
 
 class UserRead(BaseModel):
     id: int
     email: EmailStr
-<<<<<<< HEAD
     full_name: Optional[str]
+    role: str
 
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
-=======
 
-class Token(BaseModel):
-    access_token: str
-    token_type: str
->>>>>>> e3761875c99d5c92134c9a9fa2255c256c20fb91
+
+class LoginRequest(BaseModel):
+    email: EmailStr
+    password: str

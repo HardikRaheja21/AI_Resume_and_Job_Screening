@@ -1,0 +1,184 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: resume_parser_backend
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+psycopg2://resume_user:resume_pass@db:5432/resume_db
+      JWT_SECRET_KEY: change_this_in_prod
+      ACCESS_TOKEN_EXPIRE_MINUTES: 60
+      AUTO_DB_BOOTSTRAP: "false"
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5173,http://127.0.0.1:5173}
+      UPLOAD_DIR: /app/uploads
+      LOG_FILE: /app/logs/app.log
+      VECTOR_DB_DIR: /app/vector_store
+      MAX_UPLOAD_FILE_SIZE_MB: 10
+      LOGIN_RATE_LIMIT_ATTEMPTS: 5
+      LOGIN_RATE_LIMIT_WINDOW_SECONDS: 300
+      WEBHOOK_TIMEOUT_SECONDS: 8
+      WEBHOOK_RETRY_ATTEMPTS: 3
+      WEBHOOK_RETRY_BACKOFF_SECONDS: 0.8
+      EMAIL_RETRY_ATTEMPTS: 3
+      EMAIL_RETRY_BACKOFF_SECONDS: 1
+      DEAD_LETTER_DIR: /app/dead_letters
+      SLACK_WEBHOOK_URL: ${SLACK_WEBHOOK_URL:-}
+      TEAMS_WEBHOOK_URL: ${TEAMS_WEBHOOK_URL:-}
+      ATS_SYNC_URL: ${ATS_SYNC_URL:-}
+      ATS_SYNC_API_KEY: ${ATS_SYNC_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+      OPENAI_TIMEOUT_SECONDS: ${OPENAI_TIMEOUT_SECONDS:-15}
+      MATCHER_DISABLE_EMBEDDINGS: ${MATCHER_DISABLE_EMBEDDINGS:-false}
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+    command: >
+      sh -c "alembic upgrade head &&
+             uvicorn backend.main:app --host 0.0.0.0 --port 8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    volumes:
+      - uploads_data:/app/uploads
+      - app_logs:/app/logs
+      - dead_letters:/app/dead_letters
+      - vector_store:/app/vector_store
+    restart: unless-stopped
+
+  worker-default:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: resume_parser_worker_default
+    environment:
+      DATABASE_URL: postgresql+psycopg2://resume_user:resume_pass@db:5432/resume_db
+      AUTO_DB_BOOTSTRAP: "false"
+      UPLOAD_DIR: /app/uploads
+      LOG_FILE: /app/logs/worker-default.log
+      VECTOR_DB_DIR: /app/vector_store
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+      MATCHER_DISABLE_EMBEDDINGS: ${MATCHER_DISABLE_EMBEDDINGS:-false}
+    command: >
+      celery -A backend.workers.celery_app.celery_app worker
+      --loglevel=INFO --queues=default,bulk --concurrency=2 --hostname=default@%h
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    volumes:
+      - uploads_data:/app/uploads
+      - app_logs:/app/logs
+      - dead_letters:/app/dead_letters
+      - vector_store:/app/vector_store
+    restart: unless-stopped
+
+  worker-ocr:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: resume_parser_worker_ocr
+    environment:
+      DATABASE_URL: postgresql+psycopg2://resume_user:resume_pass@db:5432/resume_db
+      AUTO_DB_BOOTSTRAP: "false"
+      UPLOAD_DIR: /app/uploads
+      LOG_FILE: /app/logs/worker-ocr.log
+      VECTOR_DB_DIR: /app/vector_store
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+      OCR_ENABLE: ${OCR_ENABLE:-true}
+      OCR_DPI: ${OCR_DPI:-300}
+      OCR_PAGE_LIMIT: ${OCR_PAGE_LIMIT:-10}
+    command: >
+      celery -A backend.workers.celery_app.celery_app worker
+      --loglevel=INFO --queues=ocr --concurrency=1 --hostname=ocr@%h
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    volumes:
+      - uploads_data:/app/uploads
+      - app_logs:/app/logs
+      - vector_store:/app/vector_store
+    restart: unless-stopped
+
+  worker-ai:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: resume_parser_worker_ai
+    environment:
+      DATABASE_URL: postgresql+psycopg2://resume_user:resume_pass@db:5432/resume_db
+      AUTO_DB_BOOTSTRAP: "false"
+      UPLOAD_DIR: /app/uploads
+      LOG_FILE: /app/logs/worker-ai.log
+      VECTOR_DB_DIR: /app/vector_store
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/0
+      CELERY_RESULT_BACKEND: redis://redis:6379/1
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+      MATCHER_DISABLE_EMBEDDINGS: ${MATCHER_DISABLE_EMBEDDINGS:-false}
+    command: >
+      celery -A backend.workers.celery_app.celery_app worker
+      --loglevel=INFO --queues=embedding,ai --concurrency=1 --hostname=ai@%h
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    volumes:
+      - uploads_data:/app/uploads
+      - app_logs:/app/logs
+      - dead_letters:/app/dead_letters
+      - vector_store:/app/vector_store
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    container_name: resume_parser_db
+    environment:
+      POSTGRES_DB: resume_db
+      POSTGRES_USER: resume_user
+      POSTGRES_PASSWORD: resume_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U resume_user -d resume_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: resume_parser_redis
+    command: ["redis-server", "--save", "60", "1", "--loglevel", "warning"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  uploads_data:
+  app_logs:
+  dead_letters:
+  vector_store:
+  redis_data:

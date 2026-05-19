@@ -1,0 +1,3 @@
+John Doe
+john.doe@example.com
+Python FastAPI SQL backend engineer with REST API experience.

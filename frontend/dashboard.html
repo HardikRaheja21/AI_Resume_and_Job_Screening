@@ -2,15 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Dashboard – ResumeMatch</title>
+  <title>Dashboard - ResumeMatch</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="stylesheet" href="assets/style.css" />
   <script src="assets/app.js" defer></script>
 </head>
 <body class="body-light">
-
   <div class="layout">
-    <!-- Sidebar -->
     <aside class="sidebar">
       <div class="sidebar-header">
         <div class="brand-logo">RP</div>
@@ -28,12 +26,13 @@
       </nav>
 
       <div class="sidebar-footer">
-        <a href="index.html" class="sidebar-footer-link">← Back to landing</a>
+        <a href="index.html" class="sidebar-footer-link">&larr; Back to landing</a>
         <a href="login.html" class="sidebar-footer-link">Manage auth</a>
+        <a href="admin.html" class="sidebar-footer-link">Admin settings</a>
+        <button id="btn-logout" class="btn-secondary">Log out</button>
       </div>
     </aside>
 
-    <!-- Main Area -->
     <main class="main">
       <header class="main-header">
         <div>
@@ -44,15 +43,25 @@
         </div>
         <div class="main-status">
           <span id="dash-candidate-count">0 candidates loaded</span>
-          <span class="dot-separator">•</span>
+          <span class="dot-separator">&middot;</span>
           <span class="pill pill-green">Ready to match</span>
         </div>
       </header>
 
       <section class="dashboard-grid">
-        <!-- JD Card -->
         <div class="card card-large">
           <h2>Job description</h2>
+          <div class="job-toolbar">
+            <select id="job-select" class="input">
+              <option value="">Use pasted job description</option>
+            </select>
+            <div class="job-toolbar-actions">
+              <button id="btn-load-jobs" class="btn-secondary">Load Jobs</button>
+              <button id="btn-save-job" class="btn-chip">Save as Job</button>
+            </div>
+          </div>
+          <input id="job-title" class="input" type="text" placeholder="Job title, for example Backend Engineer" />
+          <p id="job-msg" class="msg"></p>
           <textarea id="job-description" class="input-area" placeholder="Paste or type the job description here..."></textarea>
           <div class="jd-footer">
             <span id="jd-word-count">0 words</span>
@@ -63,14 +72,29 @@
           </div>
         </div>
 
-        <!-- Right column top: ranking + interview (placeholder) -->
         <div class="card column-card">
           <div class="card-header-row">
             <h3>Candidate ranking</h3>
             <button id="btn-sort-score" class="btn-chip">Sort by score</button>
           </div>
+          <div class="filter-grid">
+            <select id="filter-job-id" class="input">
+              <option value="">All jobs</option>
+            </select>
+            <input id="filter-email" class="input" type="text" placeholder="Filter email" />
+            <input id="filter-name" class="input" type="text" placeholder="Filter name" />
+            <input id="filter-min-score" class="input" type="number" min="0" max="1" step="0.01" placeholder="Min score (0-1)" />
+            <div class="filter-actions">
+              <button id="btn-load-history" class="btn-secondary">Load history</button>
+              <button id="btn-apply-filters" class="btn-chip">Apply filters</button>
+            </div>
+          </div>
+          <div id="stats-summary" class="small-text">Stats not loaded yet.</div>
           <div id="ranking-summary" class="ranking-summary">
             No candidates yet. Run a match to see leaderboard.
+          </div>
+          <div id="jd-analysis-panel" class="jd-analysis-panel">
+            <div class="small-text">Structured JD analysis will appear here after matching.</div>
           </div>
         </div>
 
@@ -88,30 +112,91 @@
           <p id="export-msg" class="msg"></p>
         </div>
 
-        <!-- Resumes upload card -->
+        <div class="card column-card">
+          <div class="card-header-row">
+            <h3>Integrations</h3>
+          </div>
+          <p id="integration-target" class="small-text">No candidate selected.</p>
+          <textarea id="integration-message" class="input-area" placeholder="Message for Slack/Teams notification"></textarea>
+          <div class="export-buttons">
+            <button id="btn-send-slack" class="btn-secondary">Send Slack</button>
+            <button id="btn-send-teams" class="btn-secondary">Send Teams</button>
+            <button id="btn-sync-ats" class="btn-green">ATS Sync</button>
+          </div>
+          <p id="integration-msg" class="msg"></p>
+        </div>
+
+        <div class="card column-card">
+          <div class="card-header-row">
+            <h3>Demo Data</h3>
+          </div>
+          <p class="small-text">Quickly seed or reset your own account data for demos.</p>
+          <div class="export-buttons">
+            <button id="btn-seed-demo" class="btn-secondary">Seed Demo Data</button>
+            <button id="btn-reset-demo" class="btn-secondary">Reset My Data</button>
+          </div>
+          <p id="demo-msg" class="msg"></p>
+        </div>
+
+        <div class="card column-card">
+          <div class="card-header-row">
+            <h3>Saved Jobs</h3>
+            <button id="btn-refresh-jobs-panel" class="btn-chip">Refresh</button>
+          </div>
+          <p class="small-text">Review saved jobs, reopen one in the editor, or archive roles you no longer need.</p>
+          <div id="jobs-panel-list" class="jobs-panel-list">
+            <div class="small-text">No jobs loaded yet.</div>
+          </div>
+          <p id="jobs-panel-msg" class="msg"></p>
+        </div>
+
         <div class="card card-upload">
           <h2>Upload resumes (drag & drop or select)</h2>
-          <p class="small-text">Supports multiple PDF/DOCX files.</p>
-
+          <p class="small-text">Supports multiple PDF/DOCX/TXT files.</p>
           <label class="upload-box" id="upload-box">
             <span>Click here or drop files</span>
             <input id="resumes" type="file" multiple class="file-input" />
           </label>
-
           <div id="file-list" class="file-list"></div>
-
           <button id="btn-parse" class="btn-primary parse-btn">Parse & Match Resumes</button>
           <p id="parse-msg" class="msg"></p>
         </div>
 
-        <!-- Leaderboard / results -->
         <div class="card card-large">
           <h2>Leaderboard</h2>
-          <div id="results-empty" class="small-text">No results yet. Upload resumes and click “Parse & Match Resumes”.</div>
+          <div id="results-empty" class="small-text">No results yet. Upload resumes and click "Parse & Match Resumes".</div>
           <div id="results-container" class="leaderboard"></div>
+          <div class="pagination-row">
+            <button id="btn-prev-page" class="btn-chip">Previous</button>
+            <span id="page-indicator" class="small-text">Page 1</span>
+            <button id="btn-next-page" class="btn-chip">Next</button>
+          </div>
         </div>
       </section>
     </main>
+  </div>
+
+  <div id="resume-modal" class="modal hidden">
+    <div class="modal-card">
+      <div class="card-header-row">
+        <h3 id="modal-title">Resume Details</h3>
+        <button id="btn-close-modal" class="btn-chip">Close</button>
+      </div>
+      <pre id="modal-content" class="modal-content"></pre>
+    </div>
+  </div>
+
+  <div id="onboarding-modal" class="modal hidden">
+    <div class="modal-card">
+      <div class="card-header-row">
+        <h3 id="onboarding-title">Welcome</h3>
+        <button id="btn-skip-onboarding" class="btn-chip">Skip</button>
+      </div>
+      <p id="onboarding-body" class="small-text" style="margin-top:10px;"></p>
+      <div class="export-buttons" style="margin-top: 14px;">
+        <button id="btn-next-onboarding" class="btn-primary">Next</button>
+      </div>
+    </div>
   </div>
 </body>
 </html>

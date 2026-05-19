@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Settings - ResumeMatch</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="assets/style.css" />
+  <script src="assets/admin.js" defer></script>
+</head>
+<body class="body-light">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-logo">RP</div>
+        <div>
+          <div class="brand-name">ResumeMatch</div>
+          <div class="sidebar-tagline">Admin Settings</div>
+        </div>
+      </div>
+      <div class="sidebar-footer">
+        <a href="dashboard.html" class="sidebar-footer-link">Back to dashboard</a>
+        <a href="login.html" class="sidebar-footer-link">Manage auth</a>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="main-header">
+        <div>
+          <h1>Integration Diagnostics</h1>
+          <p class="main-subtitle">Check configuration and test webhook connectivity.</p>
+        </div>
+      </header>
+
+      <section class="dashboard-grid">
+        <div class="card card-large">
+          <h2>Configured Integrations</h2>
+          <p id="integration-status-summary" class="small-text">Loading...</p>
+          <button id="btn-refresh-status" class="btn-secondary">Refresh status</button>
+        </div>
+
+        <div class="card card-large">
+          <h2>Connectivity Test</h2>
+          <label for="provider" class="small-text">Provider</label>
+          <select id="provider" class="input">
+            <option value="slack">Slack</option>
+            <option value="teams">Teams</option>
+            <option value="ats">ATS</option>
+          </select>
+          <label for="test-message" class="small-text">Message</label>
+          <textarea id="test-message" class="input-area" placeholder="Connectivity test from ResumeMatch">Connectivity test from ResumeMatch</textarea>
+          <button id="btn-run-test" class="btn-primary">Run Test</button>
+          <p id="test-result-msg" class="msg"></p>
+        </div>
+
+        <div class="card card-large">
+          <h2>User Role Management</h2>
+          <p class="small-text">Admin users can promote/demote recruiters.</p>
+          <button id="btn-load-users" class="btn-secondary">Load Users</button>
+          <div id="admin-users-list" class="leaderboard" style="margin-top:10px;"></div>
+          <p id="admin-users-msg" class="msg"></p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div id="admin-onboarding-modal" class="modal hidden">
+    <div class="modal-card">
+      <div class="card-header-row">
+        <h3 id="admin-onboarding-title">Admin Walkthrough</h3>
+        <button id="btn-admin-skip" class="btn-chip">Skip</button>
+      </div>
+      <p id="admin-onboarding-body" class="small-text" style="margin-top:10px;"></p>
+      <div class="export-buttons" style="margin-top:12px;">
+        <button id="btn-admin-next" class="btn-primary">Next</button>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

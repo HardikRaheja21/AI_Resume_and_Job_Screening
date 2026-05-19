@@ -1,12 +1,6 @@
-<<<<<<< HEAD
 from datetime import datetime, timedelta
 from passlib.context import CryptContext
 from jose import jwt
-=======
-from passlib.context import CryptContext
-from jose import jwt
-from datetime import datetime, timedelta
->>>>>>> e3761875c99d5c92134c9a9fa2255c256c20fb91
 from .config import settings
 from typing import Optional
 

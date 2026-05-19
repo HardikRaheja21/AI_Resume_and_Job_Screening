@@ -1,0 +1,17 @@
+.git
+.gitignore
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+node_modules
+dist
+.vite
+resumes.db
+uploads
+dead_letters
+logs
+vector_store
+tests/e2e

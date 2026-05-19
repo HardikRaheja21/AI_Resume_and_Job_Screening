@@ -1,0 +1,11 @@
+{
+  "name": "resume-parser-frontend",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "npm --prefix ats run dev",
+    "build": "npm --prefix ats run build",
+    "lint": "npm --prefix ats run lint",
+    "preview": "npm --prefix ats run preview"
+  }
+}

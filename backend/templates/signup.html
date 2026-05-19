@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f5f7fb; margin: 0; }
+    .card { max-width: 420px; margin: 64px auto; background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 8px 24px rgba(0,0,0,.08); }
+    h1 { margin-top: 0; font-size: 24px; }
+    label { display: block; margin: 12px 0 6px; font-size: 14px; }
+    input { width: 100%; box-sizing: border-box; padding: 10px 12px; border: 1px solid #cdd5df; border-radius: 8px; }
+    button { margin-top: 16px; width: 100%; padding: 10px 12px; border: 0; border-radius: 8px; background: #1f6feb; color: #fff; cursor: pointer; }
+    .muted { color: #5f6c7b; font-size: 13px; margin-top: 12px; }
+    .msg { margin-top: 10px; font-size: 14px; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>{{ title or "Create account" }}</h1>
+    <form id="signup-form">
+      <label for="full_name">Full name</label>
+      <input id="full_name" name="full_name" type="text" placeholder="Your name" />
+
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" placeholder="you@example.com" required />
+
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" placeholder="Minimum 6 characters" required />
+
+      <button type="submit">Sign up</button>
+      <div class="msg" id="msg"></div>
+    </form>
+    <p class="muted">Already registered? <a href="{{ login_url or '/login' }}">Log in</a></p>
+  </main>
+
+  <script type="module">
+    import { signup } from "{{ api_client_src or '/frontend/assets/apiClient.js' }}";
+    const form = document.getElementById("signup-form");
+    const msg = document.getElementById("msg");
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      msg.textContent = "Creating account...";
+      const payload = {
+        full_name: form.full_name.value || null,
+        email: form.email.value.trim(),
+        password: form.password.value
+      };
+      const result = await signup(payload);
+      msg.textContent = typeof result === "string" ? result : "Signup successful.";
+    });
+  </script>
+</body>
+</html>

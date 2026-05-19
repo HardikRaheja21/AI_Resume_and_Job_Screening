@@ -1,0 +1,29 @@
+services:
+  - type: web
+    name: resume-parser-api
+    env: python
+    plan: starter
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: alembic upgrade head && uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /healthz
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: CORS_ORIGINS
+        sync: false
+      - key: AUTO_DB_BOOTSTRAP
+        value: "false"
+      - key: UPLOAD_DIR
+        value: /tmp/uploads
+      - key: LOG_FILE
+        value: /tmp/resume-parser-api.log
+      - key: DEAD_LETTER_DIR
+        value: /tmp/dead_letters
+      - key: VECTOR_DB_DIR
+        value: /tmp/vector_store
+      - key: MATCHER_DISABLE_EMBEDDINGS
+        value: "true"
+      - key: PROCESSING_EVENT_REDIS_ENABLED
+        value: "false"
