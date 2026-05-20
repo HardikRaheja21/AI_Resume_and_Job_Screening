@@ -60,9 +60,12 @@ default_origins: List[str] = [
 ]
 allow_origins = settings.CORS_ORIGINS or default_origins
 
+logger.info("CORS origins configured", extra={"allow_origins": allow_origins})
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allow_origins,
+    allow_origin_regex=r"^https:\/\/.*\.vercel\.app$",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -18,6 +18,8 @@ class UserCreate(BaseModel):
             raise ValueError("Password must include at least one lowercase letter")
         if not re.search(r"\d", value):
             raise ValueError("Password must include at least one number")
+        if len(value.encode("utf-8")) > 72:
+            raise ValueError("Password must be 72 bytes or fewer for secure bcrypt hashing")
         return value
 
 class UserRead(BaseModel):
